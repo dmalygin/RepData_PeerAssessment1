@@ -20,8 +20,8 @@ According to the assignment the following steps need to be described here:
 
 ***
 #### 1. Loading and preprocessing the data
-```{r echo = TRUE, results='hide', message=FALSE, warning=FALSE}
 
+```r
 #####################################################
 # Obtain name of the file (.zip archive with dataset)
 #####################################################
@@ -70,8 +70,19 @@ activityDataFrame <- read.csv(filePath, header = TRUE)
 
 <br></br>
 Take a glance at the uploaded data frame:
-```{r}
+
+```r
 head(activityDataFrame)
+```
+
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
 ```
 
 ***
@@ -81,11 +92,11 @@ head(activityDataFrame)
 On this step according to the assignment we will ignore the missing values in the dataset.
 
 Calculate the total number of steps per day:
-```{r}
+
+```r
 sumOfStepsPerDay <- aggregate(list(Sum_of_steps = activityDataFrame$steps), list(Date = activityDataFrame$date), sum, na.rm = TRUE)
 
 sumOfStepsPerDay$Date <- as.Date(sumOfStepsPerDay$Date)
-
 ```
 
 
@@ -93,7 +104,8 @@ sumOfStepsPerDay$Date <- as.Date(sumOfStepsPerDay$Date)
 <br></br>
 
 + Create histogram with the total number of steps per day:
-```{r echo = TRUE, results='hide', message=FALSE, warning=FALSE}
+
+```r
 library(ggplot2)
 library(scales)
 ggplot(sumOfStepsPerDay, aes(x=Date, y=Sum_of_steps)) +
@@ -104,16 +116,27 @@ ggplot(sumOfStepsPerDay, aes(x=Date, y=Sum_of_steps)) +
   ylab("Sum of steps per day")
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
 + Calculate the mean of the total number of steps taken per day:
-```{r}
+
+```r
 mean(sumOfStepsPerDay$Sum_of_steps)
+```
+
+```
+## [1] 9354.23
 ```
 
 
 + Calculate the median of the total number of steps taken per day:
-```{r}
-median(sumOfStepsPerDay$Sum_of_steps)
 
+```r
+median(sumOfStepsPerDay$Sum_of_steps)
+```
+
+```
+## [1] 10395
 ```
 
 
@@ -126,12 +149,14 @@ median(sumOfStepsPerDay$Sum_of_steps)
 
 
 Calculate average steps for interval №0, 5, 10, etc.:
-```{r}
+
+```r
 avgStepsPerInterval <- aggregate(list(Avg_steps = activityDataFrame$steps), list(Interval = activityDataFrame$interval), mean, na.rm = TRUE)
 ```
 
 Create a plot:
-```{r echo = TRUE, results='hide', message=FALSE, warning=FALSE}
+
+```r
 library(ggplot2)
 library(scales)
 ggplot(avgStepsPerInterval, aes(x = Interval, y=Avg_steps)) +
@@ -141,11 +166,19 @@ ggplot(avgStepsPerInterval, aes(x = Interval, y=Avg_steps)) +
   ylab("Average steps")
 ```
 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
+
 + Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 rowNmber <- which.max(avgStepsPerInterval$Avg_steps)
 avgStepsPerInterval[rowNmber,]
+```
+
+```
+##     Interval Avg_steps
+## 104      835  206.1698
 ```
 
 As we can see the interval №104 contains the maximum average number of steps across all days
@@ -159,7 +192,8 @@ As we can see the interval №104 contains the maximum average number of steps a
 
 + Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs):
 
-```{r}
+
+```r
 numberOfMissingValues <- sum(is.na(activityDataFrame$steps))
 ```
 
@@ -172,14 +206,26 @@ Such strategy is convenient for 2 reasons:
 
 
 Let's take a glance at our previous calculations:
-```{r}
+
+```r
 head(avgStepsPerInterval)
+```
+
+```
+##   Interval Avg_steps
+## 1        0 1.7169811
+## 2        5 0.3396226
+## 3       10 0.1320755
+## 4       15 0.1509434
+## 5       20 0.0754717
+## 6       25 2.0943396
 ```
 
 
 To fill in NA steps we will find number of intervals with NA value of steps and replace it with the appropriate value of steps from the data frame we just took a glance at.
 
-```{r}
+
+```r
 filledActivityDataFrame <- activityDataFrame
 
 len <- length(filledActivityDataFrame$interval)
@@ -193,24 +239,36 @@ for(i in 1:len){
 ```
 
 Check that replacement was performed:
-```{r}
+
+```r
 head(filledActivityDataFrame)
+```
+
+```
+##       steps       date interval
+## 1 1.7169811 2012-10-01        0
+## 2 0.3396226 2012-10-01        5
+## 3 0.1320755 2012-10-01       10
+## 4 0.1509434 2012-10-01       15
+## 5 0.0754717 2012-10-01       20
+## 6 2.0943396 2012-10-01       25
 ```
 
 + Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 Calculate the total number of steps per day:
-```{r}
+
+```r
 sumOfStepsPerDayAfterReplacement <- aggregate(list(Sum_of_steps = filledActivityDataFrame$steps), list(Date = filledActivityDataFrame$date), sum, na.rm = TRUE)
 
 sumOfStepsPerDayAfterReplacement$Date <- as.Date(sumOfStepsPerDayAfterReplacement$Date)
-
 ```
 
 
 
 + Create histogram with the total number of steps per day:
-```{r echo = TRUE, results='hide', message=FALSE, warning=FALSE}
+
+```r
 library(ggplot2)
 library(scales)
 ggplot(sumOfStepsPerDayAfterReplacement, aes(x=Date, y=Sum_of_steps)) +
@@ -221,17 +279,28 @@ ggplot(sumOfStepsPerDayAfterReplacement, aes(x=Date, y=Sum_of_steps)) +
   ylab("Sum of steps per day")
 ```
 
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+
 
 + Calculate the mean of the total number of steps taken per day:
-```{r}
+
+```r
 mean(sumOfStepsPerDayAfterReplacement$Sum_of_steps)
+```
+
+```
+## [1] 10766.19
 ```
 
 
 + Calculate the median of the total number of steps taken per day:
-```{r}
-median(sumOfStepsPerDayAfterReplacement$Sum_of_steps)
 
+```r
+median(sumOfStepsPerDayAfterReplacement$Sum_of_steps)
+```
+
+```
+## [1] 10766.19
 ```
 
 Do these values differ from the estimates from the first part of the assignment?
@@ -257,7 +326,8 @@ Since 'NA' values were replaced with average number of steps for the appropriate
 For this part we will use the dataset with the filled-in missing values.
 
 + Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
-```{r}
+
+```r
 filledActivityDataFrame$date <- as.Date(filledActivityDataFrame$date)
 
 weekdaysVector <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
@@ -270,14 +340,16 @@ filledActivityDataFrame$week_day <- factor((weekdays(filledActivityDataFrame$dat
 
 
 Subset weekdays/weekends data from the dataframe:
-```{r}
+
+```r
 weekdaysActivityDataFrame <- subset(filledActivityDataFrame, week_day == "weekday")
 weekendsActivityDataFrame <- subset(filledActivityDataFrame, week_day == "weekend")
 ```
 
 
 Calculate average number of steps for every interval across all weekdays:
-```{r}
+
+```r
 weekdaysAvgStepsPerInterval <- aggregate(list(Avg_steps = weekdaysActivityDataFrame$steps), list(Interval = weekdaysActivityDataFrame$interval), mean)
 
 weekendsAvgStepsPerInterval <- aggregate(list(Avg_steps = weekendsActivityDataFrame$steps), list(Interval = weekendsActivityDataFrame$interval), mean)
@@ -285,7 +357,8 @@ weekendsAvgStepsPerInterval <- aggregate(list(Avg_steps = weekendsActivityDataFr
 
 
 Build a plot of average number of steps per interval across all weekdays:
-```{r}
+
+```r
 library(ggplot2)
 library(scales)
 plotWeekdays <- ggplot(weekdaysAvgStepsPerInterval, aes(x = Interval, y=Avg_steps)) +
@@ -297,7 +370,8 @@ plotWeekdays <- ggplot(weekdaysAvgStepsPerInterval, aes(x = Interval, y=Avg_step
 
 
 Build a plot of  average number of steps per interval across all weekdays:
-```{r echo = TRUE, results='hide', message=FALSE, warning=FALSE}
+
+```r
 plotWeekends <- ggplot(weekendsAvgStepsPerInterval, aes(x = Interval, y=Avg_steps)) +
   geom_line() +
   xlab("Intervals (5 min)") +
@@ -306,7 +380,8 @@ plotWeekends <- ggplot(weekendsAvgStepsPerInterval, aes(x = Interval, y=Avg_step
 
 
 Combine the plots together:
-```{r echo = TRUE, results='hide', message=FALSE, warning=FALSE}
+
+```r
 # uncomment if you need to install the package
 #install.packages("cowplot")
 library(cowplot)
@@ -316,6 +391,8 @@ plot_grid(plotWeekdays,
           label_x = 0.2,
           ncol = 1)
 ```
+
+![plot of chunk unnamed-chunk-23](figure/unnamed-chunk-23-1.png)
 
 
 
